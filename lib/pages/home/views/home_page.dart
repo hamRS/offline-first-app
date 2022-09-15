@@ -34,10 +34,11 @@ class _MyHomePageState extends State<MyHomePage> {
     );
     postCubit.getPostList();
 
-    var subscription =
-        Connectivity().onConnectivityChanged.listen((ConnectivityResult res) {
+    var subscription = Connectivity()
+        .onConnectivityChanged
+        .listen((ConnectivityResult res) async {
       postCubit.connectivity = Connectivity();
-      postCubit.getPostList();
+      await postCubit.getPostList();
     });
 
     super.initState();
@@ -112,9 +113,11 @@ class HomePageBody extends StatelessWidget {
             shrinkWrap: true,
             itemCount: postList.length,
             itemBuilder: (context, index) {
-              final comment = postList[index];
+              final post = postList[index];
               return ListTile(
-                title: Text(comment.title),
+                title: Column(
+                  children: [Text(post.title)],
+                ),
               );
             },
           ),

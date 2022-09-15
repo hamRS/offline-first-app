@@ -18,7 +18,7 @@ class Post {
     required this.body,
   });
 
-  int userId;
+  int? userId;
   int id;
   String title;
   String body;

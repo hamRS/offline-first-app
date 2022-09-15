@@ -4,9 +4,7 @@ import 'package:path_provider/path_provider.dart';
 import 'package:posts_offline_first/config/const.dart';
 import 'package:sqflite/sqflite.dart';
 
-class DataBaseHelper {
-  DataBaseHelper._instance();
-  static final DataBaseHelper db = DataBaseHelper._instance();
+class DataBaseConnect {
   late Database _database;
 
   Future<Database> get database async {
@@ -30,5 +28,15 @@ class DataBaseHelper {
   Future close() async {
     var dbClient = await database;
     return dbClient.close();
+  }
+
+  Future<List<Map<String, dynamic>>> getAllPosts() async {
+    final db = await database;
+    List<Map<String, dynamic>> items = await db.query(
+      'post',
+      orderBy: 'id DESC',
+    );
+    //print(items);
+    return items;
   }
 }

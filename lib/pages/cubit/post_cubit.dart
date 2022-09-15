@@ -20,6 +20,7 @@ class PostCubit extends Cubit<PostState> {
 
   Future<void> getPostList() async {
     final connectivityStatus = await connectivity.checkConnectivity();
+    print(connectivityStatus);
     if (connectivityStatus == ConnectivityResult.none) {
       getLocalPostList();
     } else {
@@ -44,8 +45,8 @@ class PostCubit extends Cubit<PostState> {
     try {
       emit(PostLoading());
       await Future.delayed(Duration(milliseconds: 500));
-      final result = await remotePostRepository.getAllPosts();
-      print(result);
+      var result = await remotePostRepository.getAllPosts();
+      await Future.delayed(Duration(milliseconds: 500));
       emit(RemotePostLoaded(postList: result));
     } catch (error) {
       emit(PostError());

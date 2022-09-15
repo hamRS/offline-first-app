@@ -3,23 +3,22 @@ import 'package:posts_offline_first/domain/helper/db_helper.dart';
 import 'package:sqflite/sqflite.dart';
 
 class LocalPostsRepository {
-  var databaseFuture = DataBaseHelper.db.database;
+  var db = DataBaseConnect();
   static const POST_TABLE_NAME = 'post';
 
   Future<List<Post>> getAllPosts() async {
     late final List<Post> postsList;
-    final Database database = await databaseFuture;
 
-    final postsMap = await database.query(POST_TABLE_NAME);
+    final postsMap = await db.getAllPosts();
     postsList = postsMap.map((post) => Post.fromJson(post)).toList();
-    print(postsList);
     return postsList;
   }
 
   Future<void> updateLocalPostDatatable(List<Post> postList) async {
-    final Database database = await databaseFuture;
+    final database = await db.database;
     Batch batch = database.batch();
     postList.forEach((post) async {
+      print(post.toJson());
       batch.insert(
         POST_TABLE_NAME,
         post.toJson(),
@@ -27,6 +26,7 @@ class LocalPostsRepository {
       );
     });
     batch.commit();
+    database.close();
     print('db updated!');
   }
 }
