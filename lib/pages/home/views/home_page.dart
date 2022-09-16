@@ -1,3 +1,5 @@
+import 'dart:ui';
+
 import 'package:connectivity/connectivity.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/src/foundation/key.dart';
@@ -56,8 +58,7 @@ class _MyHomePageState extends State<MyHomePage> {
           listener: (context, state) async {
             if (state is RemotePostLoaded) {
               print('hello there');
-              await _localPostsRepository
-                  .updateLocalPostDatatable(state.postList);
+              postCubit.updateLocalPostDatabase(state.postList);
             }
           },
           builder: (context, state) {
@@ -114,9 +115,44 @@ class HomePageBody extends StatelessWidget {
             itemCount: postList.length,
             itemBuilder: (context, index) {
               final post = postList[index];
-              return ListTile(
-                title: Column(
-                  children: [Text(post.title)],
+              return Container(
+                padding: EdgeInsets.all(5),
+                child: Row(
+                  children: [
+                    Container(
+                      width: 60,
+                      height: 60,
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(15),
+                        color: Color.fromARGB(255, 226, 154, 149),
+                      ),
+                      child: Center(
+                        child: Text(post.id.toString()),
+                      ),
+                    ),
+                    SizedBox(
+                      width: 10,
+                    ),
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            post.title,
+                            maxLines: 2,
+                            style: TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                          Text(
+                            post.body,
+                            maxLines: 2,
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
                 ),
               );
             },

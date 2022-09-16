@@ -34,9 +34,9 @@ class DataBaseConnect {
     final db = await database;
     List<Map<String, dynamic>> items = await db.query(
       'post',
-      orderBy: 'id DESC',
+      orderBy: 'id ASC',
     );
-    //print(items);
+    print(items);
     return items;
   }
 }

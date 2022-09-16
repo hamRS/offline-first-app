@@ -4,7 +4,7 @@ const String CREATE_COMMENT_TABLE = '''
 
       create table post(
         id INTEGER PRIMARY KEY,
-        userID INTEGER,
+        userId INTEGER NOT NULL,
         title TEXT,
         body TEXT
       )
