@@ -1,4 +1,4 @@
-const String DATABASE_NAME = 'offline_first2.db';
+const String DATABASE_NAME = 'offline_first.db';
 
 const String CREATE_COMMENT_TABLE = '''
 

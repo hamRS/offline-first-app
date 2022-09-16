@@ -18,7 +18,6 @@ class LocalPostsRepository {
     final database = await db.database;
     Batch batch = database.batch();
     postList.forEach((post) async {
-      print(post.id);
       batch.insert(
         POST_TABLE_NAME,
         post.toJson(),

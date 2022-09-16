@@ -36,7 +36,6 @@ class DataBaseConnect {
       'post',
       orderBy: 'id ASC',
     );
-    print(items);
     return items;
   }
 }

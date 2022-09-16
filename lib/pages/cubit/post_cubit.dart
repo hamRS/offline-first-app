@@ -1,7 +1,7 @@
 import 'dart:io';
 
 import 'package:bloc/bloc.dart';
-import 'package:connectivity/connectivity.dart';
+import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:meta/meta.dart';
 import 'package:posts_offline_first/domain/comment/models/post_model.dart';
 import 'package:posts_offline_first/services/local_posts_repo.dart';
@@ -33,7 +33,6 @@ class PostCubit extends Cubit<PostState> {
       emit(PostLoading());
       await Future.delayed(Duration(milliseconds: 500));
       final result = await localPostsRepository.getAllPosts();
-      print(result);
       emit(LocalPostLoaded(postList: result));
     } catch (error) {
       print(error);
@@ -46,7 +45,6 @@ class PostCubit extends Cubit<PostState> {
       emit(PostLoading());
       await Future.delayed(Duration(milliseconds: 500));
       var result = await remotePostRepository.getAllPosts();
-      await Future.delayed(Duration(milliseconds: 500));
       emit(RemotePostLoaded(postList: result));
     } catch (error) {
       emit(PostError());

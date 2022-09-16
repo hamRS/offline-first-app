@@ -1,6 +1,7 @@
+import 'dart:async';
 import 'dart:ui';
 
-import 'package:connectivity/connectivity.dart';
+import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/src/foundation/key.dart';
 import 'package:flutter/src/widgets/framework.dart';
@@ -23,8 +24,10 @@ class _MyHomePageState extends State<MyHomePage> {
   late final LocalPostsRepository _localPostsRepository;
   late Connectivity _connectivity;
 
+  ConnectivityResult _connectivityResult = ConnectivityResult.none;
+  late StreamSubscription<ConnectivityResult> _connectivitySubscription;
   @override
-  void initState() {
+  initState() {
     _remotePostRepository = RemotePostRepository();
     _localPostsRepository = LocalPostsRepository();
     _connectivity = Connectivity();
@@ -34,16 +37,28 @@ class _MyHomePageState extends State<MyHomePage> {
       _localPostsRepository,
       _connectivity,
     );
-    postCubit.getPostList();
-
-    var subscription = Connectivity()
-        .onConnectivityChanged
-        .listen((ConnectivityResult res) async {
-      postCubit.connectivity = Connectivity();
-      await postCubit.getPostList();
-    });
-
+    getConnectionStatus();
+    _connectivitySubscription =
+        _connectivity.onConnectivityChanged.listen(_updateConnectionStatus);
     super.initState();
+  }
+
+  Future<void> getConnectionStatus() async {
+    _connectivityResult = await _connectivity.checkConnectivity();
+  }
+
+  Future<void> _updateConnectionStatus(ConnectivityResult result) async {
+    if (result == ConnectivityResult.mobile &&
+            _connectivityResult == ConnectivityResult.wifi ||
+        _connectivityResult == ConnectivityResult.mobile &&
+            result == ConnectivityResult.wifi) {
+      _connectivityResult = result;
+      postCubit.connectivity = Connectivity();
+    } else {
+      postCubit.getPostList();
+      _connectivityResult = result;
+      postCubit.connectivity = Connectivity();
+    }
   }
 
   @override
@@ -58,7 +73,7 @@ class _MyHomePageState extends State<MyHomePage> {
           listener: (context, state) async {
             if (state is RemotePostLoaded) {
               print('hello there');
-              postCubit.updateLocalPostDatabase(state.postList);
+              _localPostsRepository.updateLocalPostDatatable(state.postList);
             }
           },
           builder: (context, state) {
@@ -91,6 +106,12 @@ class _MyHomePageState extends State<MyHomePage> {
         ),
       ),
     );
+  }
+
+  @override
+  dispose() {
+    super.dispose();
+    _connectivitySubscription.cancel();
   }
 }
 
